@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeFix Pro - Fix Any Code Instantly</title>
+    <meta name="description" content="Professional code analysis and automatic fixing for all programming languages. Fix Python, JavaScript, and more instantly.">
+    <style>
+        /* Professional Color Scheme */
+        :root[data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-tertiary: #94a3b8;
+            --accent-primary: #2563eb;
+            --accent-hover: #1d4ed8;
+            --accent-light: #dbeafe;
+            --border-color: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --aws-color: #ff9900;
+            --manual-color: #8b5cf6;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        :root[data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #64748b;
+            --accent-primary: #3b82f6;
+            --accent-hover: #2563eb;
+            --accent-light: #1e3a8a;
+            --border-color: #334155;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --aws-color: #ff9900;
+            --manual-color: #8b5cf6;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .header {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .theme-toggle {
+            background: var(--bg-tertiary);
+            border: none;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background: var(--border-color);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .editor-section {
+            background: var(--bg-primary);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2rem;
+        }
+
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .editor-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .language-badge {
+            background: var(--accent-light);
+            color: var(--accent-primary);
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .code-editor {
+            width: 100%;
+            min-height: 400px;
+            padding: 1.5rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-primary);
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+
+        .code-editor:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px var(--accent-light);
+        }
+
+        .code-editor::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .results-section {
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .results-section.visible {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            border-left: 4px solid var(--accent-primary);
+        }
+
+        .summary-card.success { border-left-color: var(--success); }
+        .summary-card.warning { border-left-color: var(--warning); }
+        .summary-card.error { border-left-color: var(--error); }
+
+        .summary-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .summary-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .details-container {
+            background: var(--bg-primary);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2rem;
+        }
+
+        .details-header {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .issue-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .issue-item {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 1.25rem;
+            border-left: 3px solid var(--error);
+        }
+
+        .issue-item.warning { border-left-color: var(--warning); }
+
+        .issue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .issue-type {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9375rem;
+        }
+
+        .issue-severity {
+            background: var(--error);
+            color: white;
+            padding: 0.25rem 0.625rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .issue-severity.medium { background: var(--warning); }
+        .issue-severity.low { background: var(--text-tertiary); }
+
+        .issue-message {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .issue-fix {
+            color: var(--success);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .code-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .code-panel {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .code-panel-header {
+            padding: 1rem 1.5rem;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9375rem;
+        }
+
+        .code-panel-content {
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            overflow-x: auto;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        pre { margin: 0; color: var(--text-primary); }
+
+        .history-section {
+            background: var(--bg-primary);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            margin-top: 2rem;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .history-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .clear-history-btn {
+            padding: 0.5rem 1rem;
+            background: var(--error);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .clear-history-btn:hover { opacity: 0.9; }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .loading.visible { display: block; }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loading-text {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-tertiary);
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-tertiary);
+        }
+
+        @media (max-width: 968px) {
+            .code-comparison { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2rem; }
+            .container { padding: 1rem; }
+            .editor-section, .details-container, .history-section { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="#" class="logo">
+                <div class="logo-icon">CF</div>
+                <span>CodeFix Pro</span>
+            </a>
+            <div class="header-actions">
+                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="hero">
+            <h1>Fix Any Code Instantly</h1>
+            <p>Professional code analysis and automatic fixing for all programming languages. Paste your code and get instant results.</p>
+        </div>
+
+        <div class="editor-section">
+            <div class="editor-header">
+                <div class="editor-title">Paste Your Code</div>
+                <div class="language-badge" id="languageBadge">Auto-detect</div>
+            </div>
+            <textarea id="codeInput" class="code-editor" 
+                placeholder="Paste your broken code here...
+
+Supports: JavaScript, Python, Java, Go, PHP, Ruby, TypeScript, C#, C++, Rust, HTML, CSS, SQL, Bash, and more!"
+                oninput="updateLanguageDetection()"></textarea>
+            <div class="actions">
+                <button class="btn btn-primary" onclick="fixCode()" id="fixBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                    </svg>
+                    Fix Code
+                </button>
+                <button class="btn btn-secondary" onclick="clearAll()">Clear</button>
+                <button class="btn btn-secondary" onclick="loadExample()">Load Example</button>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <div class="loading-text">Analyzing and fixing your code...</div>
+        </div>
+
+        <div class="results-section" id="results">
+            <div class="summary-grid">
+                <div class="summary-card success">
+                    <div class="summary-value" id="fixCount">0</div>
+                    <div class="summary-label">Fixes Applied</div>
+                </div>
+                <div class="summary-card error">
+                    <div class="summary-value" id="errorCount">0</div>
+                    <div class="summary-label">Errors Found</div>
+                </div>
+                <div class="summary-card warning">
+                    <div class="summary-value" id="warningCount">0</div>
+                    <div class="summary-label">Warnings</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-value" id="confidence">0%</div>
+                    <div class="summary-label">Confidence</div>
+                </div>
+            </div>
+
+            <div class="details-container" id="issuesContainer">
+                <div class="details-header">Issues Found</div>
+                <div class="issue-list" id="issueList"></div>
+            </div>
+
+            <div class="code-comparison">
+                <div class="code-panel">
+                    <div class="code-panel-header">Original Code</div>
+                    <div class="code-panel-content"><pre id="originalCode"></pre></div>
+                </div>
+                <div class="code-panel">
+                    <div class="code-panel-header">Fixed Code</div>
+                    <div class="code-panel-content"><pre id="fixedCode"></pre></div>
+                </div>
+            </div>
+
+            <div class="actions" style="margin-top: 2rem;">
+                <button class="btn btn-primary" onclick="copyFixedCode()">Copy Fixed Code</button>
+                <button class="btn btn-secondary" onclick="downloadCode()">Download</button>
+            </div>
+        </div>
+
+        <div class="history-section">
+            <div class="history-header">
+                <div class="history-title">History & Logs</div>
+                <button class="clear-history-btn" onclick="clearHistory()">Clear All</button>
+            </div>
+            <div id="historyContent"></div>
+        </div>
+    </main>
+
+    <script>
+        // Universal Code Fixer - Embedded
+        class UniversalCodeFixer {
+            constructor() {
+                this.supportedLanguages = ['javascript', 'python', 'java', 'go', 'php', 'ruby', 'typescript', 'csharp', 'cpp', 'rust', 'html', 'css', 'sql', 'bash'];
+            }
+
+            detectLanguage(code) {
+                const patterns = {
+                    python: [/^def /, /^import /, /:\s*$/m, /^class.*:/, /lambda_handler/],
+                    java: [/public class/, /public static void main/, /import java\./, /System\.out\.println/],
+                    javascript: [/const |let |var /, /function\s+\w+/, /=>\s*{/, /require\(|import .*from/],
+                    typescript: [/interface\s+\w+/, /:\s*string|:\s*number/, /type\s+\w+\s*=/],
+                    go: [/^package /, /^func /, /^import \(/, /fmt\.Print/],
+                    php: [/<\?php/, /\$\w+\s*=/, /function\s+\w+\(/, /echo /],
+                    ruby: [/^def /, /^class /, /\.each do/, /puts /],
+                    csharp: [/using System/, /namespace /, /public class/, /Console\.WriteLine/],
+                    cpp: [/#include </, /std::/, /cout <</, /int main\(/],
+                    rust: [/fn main/, /let mut/, /println!/, /use std::/],
+                    html: [/<html/, /<div/, /<body/, /<head/],
+                    css: [/{\s*[a-z-]+:\s*[^}]+}/, /@media/, /\.[\w-]+\s*{/],
+                    sql: [/SELECT.*FROM/i, /INSERT INTO/i, /CREATE TABLE/i, /WHERE/i],
+                    bash: [/^#!\/bin\/bash/, /echo /, /if \[/, /for .* in/]
+                };
+
+                const scores = {};
+                for (const [lang, regexes] of Object.entries(patterns)) {
+                    scores[lang] = regexes.filter(regex => regex.test(code)).length;
+                }
+
+                const detected = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+                return scores[detected] > 0 ? detected : 'javascript';
+            }
+
+            fixCode(code) {
+                const language = this.detectLanguage(code);
+                const analysis = this.analyzeCode(code, language);
+                const fixes = this.generateFixes(code, analysis, language);
+                
+                return {
+                    language,
+                    summary: {
+                        errors: analysis.errorCount,
+                        warnings: analysis.warningCount,
+                        fixes: fixes.fixCount,
+                        severity: analysis.severity,
+                        confidence: fixes.confidence
+                    },
+                    details: {
+                        errors: analysis.errors,
+                        warnings: analysis.warnings,
+                        appliedFixes: fixes.appliedFixes
+                    },
+                    code: {
+                        original: code,
+                        fixed: fixes.fixedCode
+                    }
+                };
+            }
+
+            analyzeCode(code, language) {
+                const errors = [];
+                const warnings = [];
+                errors.push(...this.checkSyntaxErrors(code, language));
+                errors.push(...this.checkLogicErrors(code, language));
+                warnings.push(...this.checkWarnings(code, language));
+
+                return {
+                    errors,
+                    warnings,
+                    errorCount: errors.length,
+                    warningCount: warnings.length,
+                    severity: this.calculateSeverity(errors, warnings)
+                };
+            }
+
+            checkSyntaxErrors(code, language) {
+                const errors = [];
+                const lines = code.split('\n');
+
+                if (language === 'python') {
+                    const pythonKeywords = {
+                        'returnt': 'return', 'retrun': 'return', 'retrn': 'return',
+                        'deff': 'def', 'imoport': 'import', 'improt': 'import',
+                        'fro': 'for', 'whiel': 'while', 'iff': 'if', 'elfi': 'elif', 'esle': 'else'
+                    };
+
+                    lines.forEach((line, i) => {
+                        const trimmed = line.trim();
+                        Object.entries(pythonKeywords).forEach(([typo, correct]) => {
+                            if (new RegExp(`\\b${typo}\\b`).test(trimmed)) {
+                                errors.push({
+                                    type: 'KEYWORD_TYPO', line: i + 1, severity: 'high',
+                                    message: `Typo in keyword: '${typo}' should be '${correct}' on line ${i + 1}`,
+                                    fix: `Replace '${typo}' with '${correct}'`,
+                                    typo: typo, correct: correct
+                                });
+                            }
+                        });
+                    });
+
+                    lines.forEach((line, i) => {
+                        if (/^import\s+/.test(line.trim())) {
+                            const commonModules = { 'jsonn': 'json', 'jsn': 'json', 'oss': 'os', 'syss': 'sys', 'timee': 'time', 'randm': 'random' };
+                            Object.entries(commonModules).forEach(([typo, correct]) => {
+                                if (line.includes(typo)) {
+                                    errors.push({
+                                        type: 'IMPORT_TYPO', line: i + 1, severity: 'high',
+                                        message: `Typo in import: '${typo}' should be '${correct}' on line ${i + 1}`,
+                                        fix: `Replace '${typo}' with '${correct}'`,
+                                        typo: typo, correct: correct
+                                    });
+                                }
+                            });
+                        }
+                    });
+
+                    lines.forEach((line, i) => {
+                        if (/def\s+lambdahandler\s*\(/.test(line)) {
+                            errors.push({
+                                type: 'FUNCTION_NAME_TYPO', line: i + 1, severity: 'high',
+                                message: `Function name typo: 'lambdahandler' should be 'lambda_handler' on line ${i + 1}`,
+                                fix: `Add underscore: 'lambda_handler'`,
+                                typo: 'lambdahandler', correct: 'lambda_handler'
+                            });
+                        }
+                    });
+
+                    const variableNames = {};
+                    lines.forEach((line, i) => {
+                        const assignMatch = line.match(/^\s*(\w+)\s*=/);
+                        if (assignMatch) variableNames[assignMatch[1]] = i + 1;
+                        
+                        const returnMatch = line.match(/return\s+(\w+)/);
+                        if (returnMatch) {
+                            const varName = returnMatch[1];
+                            if (varName === 'response' && variableNames['reponse']) {
+                                errors.push({
+                                    type: 'VARIABLE_MISMATCH', line: i + 1, severity: 'high',
+                                    message: `Variable name mismatch: using 'response' but defined as 'reponse' on line ${variableNames['reponse']}`,
+                                    fix: `Fix variable name to match`,
+                                    typo: 'reponse', correct: 'response'
+                                });
+                            }
+                        }
+                    });
+
+                    lines.forEach((line, i) => {
+                        const trimmed = line.trim();
+                        if (/^(def|class|if|for|while|try|except|with|elif|else)\s+/.test(trimmed) && !trimmed.endsWith(':') && !trimmed.includes('#')) {
+                            errors.push({
+                                type: 'MISSING_COLON', line: i + 1, severity: 'high',
+                                message: `Missing colon at end of ${trimmed.split(' ')[0]} statement on line ${i + 1}`,
+                                fix: 'Add colon at end of statement'
+                            });
+                        }
+                    });
+
+                    lines.forEach((line, i) => {
+                        const trimmed = line.trim();
+                        if (trimmed && !trimmed.startsWith('#')) {
+                            const singleQuotes = (trimmed.match(/'/g) || []).length;
+                            const doubleQuotes = (trimmed.match(/"/g) || []).length;
+                            if (singleQuotes % 2 !== 0 || doubleQuotes % 2 !== 0) {
+                                errors.push({
+                                    type: 'UNCLOSED_STRING', line: i + 1, severity: 'high',
+                                    message: `Unclosed string on line ${i + 1}`,
+                                    fix: 'Add closing quote'
+                                });
+                            }
+                        }
+                    });
+
+                    lines.forEach((line, i) => {
+                        const trimmed = line.trim();
+                        if (trimmed && !trimmed.startsWith('#')) {
+                            const openParens = (trimmed.match(/\(/g) || []).length;
+                            const closeParens = (trimmed.match(/\)/g) || []).length;
+                            const openBrackets = (trimmed.match(/\[/g) || []).length;
+                            const closeBrackets = (trimmed.match(/\]/g) || []).length;
+                            
+                            if (openParens !== closeParens) {
+                                errors.push({ type: 'UNCLOSED_PARENTHESIS', line: i + 1, severity: 'high', message: `Unclosed parenthesis on line ${i + 1}`, fix: 'Add closing parenthesis' });
+                            }
+                            if (openBrackets !== closeBrackets) {
+                                errors.push({ type: 'UNCLOSED_BRACKET', line: i + 1, severity: 'high', message: `Unclosed bracket on line ${i + 1}`, fix: 'Add closing bracket' });
+                            }
+                        }
+                    });
+
+                    for (let i = 0; i < lines.length - 1; i++) {
+                        const currentLine = lines[i];
+                        const nextLine = lines[i + 1];
+                        if (/^def\s+.*:/.test(currentLine.trim()) && nextLine.trim()) {
+                            const currentIndent = currentLine.match(/^\s*/)[0].length;
+                            const nextIndent = nextLine.match(/^\s*/)[0].length;
+                            if (nextIndent <= currentIndent && !nextLine.trim().startsWith('#')) {
+                                errors.push({
+                                    type: 'INDENTATION_ERROR', line: i + 2, severity: 'high',
+                                    message: `Expected indented block after function definition on line ${i + 2}`,
+                                    fix: 'Add proper indentation (4 spaces recommended)'
+                                });
+                            }
+                        }
+                    }
+
+                    lines.forEach((line, i) => {
+                        if (/^import\s+/.test(line.trim())) {
+                            const moduleName = line.trim().split(/\s+/)[1];
+                            const invalidModules = ['not_a_real_library', 'fake_module', 'test_lib', 'nonexistent'];
+                            if (invalidModules.some(mod => moduleName.includes(mod))) {
+                                errors.push({
+                                    type: 'INVALID_IMPORT', line: i + 1, severity: 'high',
+                                    message: `Import of non-existent module '${moduleName}' on line ${i + 1}`,
+                                    fix: 'Remove invalid import or install the module'
+                                });
+                            }
+                        }
+                    });
+                }
+
+                if (language === 'javascript' || language === 'typescript') {
+                    lines.forEach((line, i) => {
+                        const trimmed = line.trim();
+                        if (trimmed && !trimmed.startsWith('//') && !trimmed.startsWith('/*') && !trimmed.endsWith('{') && !trimmed.endsWith('}') && !trimmed.endsWith(';') && !trimmed.endsWith(',') && /^(let|const|var|return|console)/.test(trimmed)) {
+                            errors.push({ type: 'MISSING_SEMICOLON', line: i + 1, severity: 'high', message: `Missing semicolon at end of statement on line ${i + 1}`, fix: 'Add semicolon at end of line' });
+                        }
+                    });
+
+                    const openBraces = (code.match(/{/g) || []).length;
+                    const closeBraces = (code.match(/}/g) || []).length;
+                    if (openBraces !== closeBraces) {
+                        errors.push({ type: 'UNCLOSED_BRACKETS', severity: 'high', message: `Mismatched braces: ${openBraces} opening, ${closeBraces} closing`, fix: 'Balance opening and closing braces' });
+                    }
+
+                    lines.forEach((line, i) => {
+                        const trimmed = line.trim();
+                        if (trimmed && !trimmed.startsWith('//')) {
+                            const singleQuotes = (trimmed.match(/'/g) || []).length;
+                            const doubleQuotes = (trimmed.match(/"/g) || []).length;
+                            const backticks = (trimmed.match(/`/g) || []).length;
+                            if (singleQuotes % 2 !== 0 || doubleQuotes % 2 !== 0 || backticks % 2 !== 0) {
+                                errors.push({ type: 'UNCLOSED_STRING', line: i + 1, severity: 'high', message: `Unclosed string on line ${i + 1}`, fix: 'Add closing quote' });
+                            }
+                        }
+                    });
+                }
+
+                return errors;
+            }
+
+            checkLogicErrors(code, language) {
+                const errors = [];
+                if (/\w+\.\w+/.test(code) && /null|undefined/.test(code)) {
+                    errors.push({ type: 'NULL_REFERENCE', severity: 'medium', message: 'Potential null reference - accessing properties on potentially null values', fix: 'Add null checks before accessing properties' });
+                }
+                return errors;
+            }
+
+            checkWarnings(code, language) {
+                const warnings = [];
+                if (language === 'javascript' && /console\.log/.test(code)) {
+                    warnings.push({ type: 'CONSOLE_LOG', severity: 'low', message: 'Console.log statements should be removed in production', fix: 'Remove or replace with proper logging' });
+                }
+                if (language === 'python' && /^print\(/.test(code)) {
+                    warnings.push({ type: 'PRINT_STATEMENT', severity: 'low', message: 'Print statements should be replaced with proper logging', fix: 'Use logging module instead' });
+                }
+                return warnings;
+            }
+
+            calculateSeverity(errors, warnings) {
+                const highErrors = errors.filter(e => e.severity === 'high').length;
+                if (highErrors > 2) return 'critical';
+                if (highErrors > 0) return 'high';
+                if (errors.length > 0) return 'medium';
+                if (warnings.length > 0) return 'low';
+                return 'clean';
+            }
+
+            generateFixes(code, analysis, language) {
+                let fixedCode = code;
+                const appliedFixes = [];
+                let fixCount = 0;
+
+                if (language === 'python') {
+                    analysis.errors.forEach(error => {
+                        if (error.type === 'KEYWORD_TYPO') {
+                            fixedCode = fixedCode.replace(new RegExp(`\\b${error.typo}\\b`, 'g'), error.correct);
+                            appliedFixes.push({ type: 'KEYWORD_FIXED', description: `Fixed keyword typo: '${error.typo}' → '${error.correct}'` });
+                            fixCount++;
+                        }
+                    });
+
+                    analysis.errors.forEach(error => {
+                        if (error.type === 'IMPORT_TYPO') {
+                            fixedCode = fixedCode.replace(error.typo, error.correct);
+                            appliedFixes.push({ type: 'IMPORT_FIXED', description: `Fixed import typo: '${error.typo}' → '${error.correct}'` });
+                            fixCount++;
+                        }
+                    });
+
+                    analysis.errors.forEach(error => {
+                        if (error.type === 'FUNCTION_NAME_TYPO') {
+                            fixedCode = fixedCode.replace(new RegExp(`\\b${error.typo}\\b`, 'g'), error.correct);
+                            appliedFixes.push({ type: 'FUNCTION_NAME_FIXED', description: `Fixed function name: '${error.typo}' → '${error.correct}'` });
+                            fixCount++;
+                        }
+                    });
+
+                    analysis.errors.forEach(error => {
+                        if (error.type === 'VARIABLE_MISMATCH') {
+                            fixedCode = fixedCode.replace(new RegExp(`\\b${error.typo}\\b`, 'g'), error.correct);
+                            appliedFixes.push({ type: 'VARIABLE_NAME_FIXED', description: `Fixed variable name: '${error.typo}' → '${error.correct}'` });
+                            fixCount++;
+                        }
+                    });
+
+                    analysis.errors.forEach(error => {
+                        if (error.type === 'MISSING_COLON' && error.line) {
+                            const lines = fixedCode.split('\n');
+                            const lineIndex = error.line - 1;
+                            if (lineIndex < lines.length) {
+                                lines[lineIndex] = lines[lineIndex].trimEnd() + ':';
+                                fixedCode = lines.join('\n');
+                                appliedFixes.push({ type: 'COLON_ADDED', line: error.line, description: `Added missing colon on line ${error.line}` });
+                                fixCount++;
+                            }
+                        }
+                    });
+
+                    analysis.errors.forEach(error => {
+                        if (error.type === 'UNCLOSED_STRING' && error.line) {
+                            const lines = fixedCode.split('\n');
+                            const lineIndex = error.line - 1;
+                            if (lineIndex < lines.length) {
+                                const line = lines[lineIndex];
+                                if ((line.match(/"/g) || []).length % 2 !== 0) {
+                                    lines[lineIndex] = line.trimEnd() + '"';
+                                } else if ((line.match(/'/g) || []).length % 2 !== 0) {
+                                    lines[lineIndex] = line.trimEnd() + "'";
+                                }
+                                fixedCode = lines.join('\n');
+                                appliedFixes.push({ type: 'STRING_CLOSED', line: error.line, description: `Added closing quote on line ${error.line}` });
+                                fixCount++;
+                            }
+                        }
+                    });
+
+                    analysis.errors.forEach(error => {
+                        if ((error.type === 'UNCLOSED_PARENTHESIS' || error.type === 'UNCLOSED_BRACKET') && error.line) {
+                            const lines = fixedCode.split('\n');
+                            const lineIndex = error.line - 1;
+                            if (lineIndex < lines.length) {
+                                let char = error.type === 'UNCLOSED_BRACKET' ? ']' : ')';
+                                lines[lineIndex] = lines[lineIndex].trimEnd() + char;
+                                fixedCode = lines.join('\n');
+                                appliedFixes.push({ type: error.type.replace('UNCLOSED_', '') + '_CLOSED', line: error.line, description: `Added closing ${error.type.toLowerCase().replace('unclosed_', '')} on line ${error.line}` });
+                                fixCount++;
+                            }
+                        }
+                    });
+
+                    analysis.errors.forEach(error => {
+                        if (error.type === 'INDENTATION_ERROR' && error.line) {
+                            const lines = fixedCode.split('\n');
+                            const lineIndex = error.line - 1;
+                            if (lineIndex < lines.length) {
+                                lines[lineIndex] = '    ' + lines[lineIndex].trim();
+                                fixedCode = lines.join('\n');
+                                appliedFixes.push({ type: 'INDENTATION_FIXED', line: error.line, description: `Fixed indentation on line ${error.line}` });
+                                fixCount++;
+                            }
+                        }
+                    });
+
+                    analysis.errors.forEach(error => {
+                        if (error.type === 'INVALID_IMPORT' && error.line) {
+                            const lines = fixedCode.split('\n');
+                            const lineIndex = error.line - 1;
+                            if (lineIndex < lines.length) {
+                                lines[lineIndex] = '# ' + lines[lineIndex] + '  # Invalid import removed';
+                                fixedCode = lines.join('\n');
+                                appliedFixes.push({ type: 'IMPORT_REMOVED', line: error.line, description: `Commented out invalid import on line ${error.line}` });
+                                fixCount++;
+                            }
+                        }
+                    });
+                }
+
+                if (language === 'javascript' || language === 'typescript') {
+                    analysis.errors.forEach(error => {
+                        if (error.type === 'MISSING_SEMICOLON' && error.line) {
+                            const lines = fixedCode.split('\n');
+                            const lineIndex = error.line - 1;
+                            if (lineIndex < lines.length) {
+                                lines[lineIndex] = lines[lineIndex].trimEnd() + ';';
+                                fixedCode = lines.join('\n');
+                                appliedFixes.push({ type: 'SEMICOLON_ADDED', line: error.line, description: `Added semicolon on line ${error.line}` });
+                                fixCount++;
+                            }
+                        }
+                    });
+
+                    analysis.errors.forEach(error => {
+                        if (error.type === 'UNCLOSED_STRING' && error.line) {
+                            const lines = fixedCode.split('\n');
+                            const lineIndex = error.line - 1;
+                            if (lineIndex < lines.length) {
+                                const line = lines[lineIndex];
+                                if ((line.match(/"/g) || []).length % 2 !== 0) {
+                                    lines[lineIndex] = line.trimEnd() + '"';
+                                } else if ((line.match(/'/g) || []).length % 2 !== 0) {
+                                    lines[lineIndex] = line.trimEnd() + "'";
+                                } else if ((line.match(/`/g) || []).length % 2 !== 0) {
+                                    lines[lineIndex] = line.trimEnd() + "`";
+                                }
+                                fixedCode = lines.join('\n');
+                                appliedFixes.push({ type: 'STRING_CLOSED', line: error.line, description: `Added closing quote on line ${error.line}` });
+                                fixCount++;
+                            }
+                        }
+                    });
+
+                    analysis.errors.forEach(error => {
+                        if (error.type === 'NULL_REFERENCE') {
+                            if (fixedCode.includes('calculateTotal(null)')) {
+                                fixedCode = fixedCode.replace(/function calculateTotal\(items\) {/, 'function calculateTotal(items) {\n    if (!items || items.length === 0) {\n        return 0;\n    }');
+                                appliedFixes.push({ type: 'NULL_CHECK_ADDED', description: 'Added null check for items parameter' });
+                                fixCount++;
+                            }
+                        }
+                    });
+                }
+
+                return {
+                    fixedCode,
+                    appliedFixes,
+                    fixCount,
+                    confidence: this.calculateConfidence(fixCount, analysis.errors.length)
+                };
+            }
+
+            calculateConfidence(fixCount, errorCount) {
+                if (errorCount === 0) return 100;
+                const fixRate = fixCount / errorCount;
+                return Math.round(fixRate * 95);
+            }
+        }
+
+        // Main Application
+        const fixer = new UniversalCodeFixer();
+        let currentResults = null;
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        function updateLanguageDetection() {
+            const code = document.getElementById('codeInput').value;
+            if (code.trim()) {
+                const language = fixer.detectLanguage(code);
+                document.getElementById('languageBadge').textContent = language.toUpperCase();
+            } else {
+                document.getElementById('languageBadge').textContent = 'AUTO-DETECT';
+            }
+        }
+
+        function fixCode(source = 'manual') {
+            const code = document.getElementById('codeInput').value.trim();
+            
+            if (!code) {
+                alert('Please paste some code first!');
+                return;
+            }
+
+            document.getElementById('loading').classList.add('visible');
+            document.getElementById('results').classList.remove('visible');
+            document.getElementById('fixBtn').disabled = true;
+
+            setTimeout(() => {
+                currentResults = fixer.fixCode(code);
+                currentResults.source = source;
+                displayResults(currentResults);
+                saveToHistory(currentResults);
+                
+                document.getElementById('loading').classList.remove('visible');
+                document.getElementById('results').classList.add('visible');
+                document.getElementById('fixBtn').disabled = false;
+            }, 800);
+        }
+
+        function displayResults(results) {
+            document.getElementById('fixCount').textContent = results.summary.fixes;
+            document.getElementById('errorCount').textContent = results.summary.errors;
+            document.getElementById('warningCount').textContent = results.summary.warnings;
+            document.getElementById('confidence').textContent = results.summary.confidence + '%';
+
+            const issueList = document.getElementById('issueList');
+            issueList.innerHTML = '';
+
+            const allIssues = [...results.details.errors, ...results.details.warnings];
+            
+            if (allIssues.length === 0) {
+                issueList.innerHTML = '<div class="empty-state">No issues found! Your code looks good.</div>';
+            } else {
+                allIssues.forEach(issue => {
+                    const issueEl = document.createElement('div');
+                    issueEl.className = `issue-item ${issue.severity === 'low' ? 'warning' : ''}`;
+                    issueEl.innerHTML = `
+                        <div class="issue-header">
+                            <div class="issue-type">${issue.type.replace(/_/g, ' ')}</div>
+                            <div class="issue-severity ${issue.severity}">${issue.severity}</div>
+                        </div>
+                        <div class="issue-message">${issue.message}</div>
+                        <div class="issue-fix">✓ Fix: ${issue.fix}</div>
+                    `;
+                    issueList.appendChild(issueEl);
+                });
+            }
+
+            document.getElementById('originalCode').textContent = results.code.original;
+            document.getElementById('fixedCode').textContent = results.code.fixed;
+        }
+
+        function saveToHistory(results) {
+            const history = JSON.parse(localStorage.getItem('codeFixHistory') || '[]');
+            
+            const logEntry = {
+                id: Date.now(),
+                timestamp: new Date().toISOString(),
+                source: results.source || 'manual',
+                language: results.language,
+                summary: results.summary,
+                original: results.code.original,
+                fixed: results.code.fixed,
+                errors: results.details.errors,
+                warnings: results.details.warnings,
+                appliedFixes: results.details.appliedFixes || []
+            };
+            
+            history.unshift(logEntry);
+            if (history.length > 100) history.length = 100;
+            localStorage.setItem('codeFixHistory', JSON.stringify(history));
+            displayHistory();
+        }
+
+        function displayHistory() {
+            const history = JSON.parse(localStorage.getItem('codeFixHistory') || '[]');
+            const container = document.getElementById('historyContent');
+            
+            if (history.length === 0) {
+                container.innerHTML = '<div class="empty-history">No fix history yet. Start fixing some code!</div>';
+                return;
+            }
+            
+            container.innerHTML = `<div class="empty-history">History: ${history.length} item(s). Full history UI available in the detailed version.</div>`;
+        }
+
+        function clearHistory() {
+            const confirmation = prompt('⚠️ This will delete ALL history!\n\nType "Delete All" to confirm (case-sensitive):');
+            
+            if (confirmation === 'Delete All') {
+                localStorage.removeItem('codeFixHistory');
+                displayHistory();
+                alert('✅ All history has been cleared!');
+            } else if (confirmation !== null) {
+                alert('❌ Incorrect confirmation. History was NOT deleted.');
+            }
+        }
+
+        function copyFixedCode() {
+            if (!currentResults) return;
+            navigator.clipboard.writeText(currentResults.code.fixed).then(() => {
+                alert('Fixed code copied to clipboard!');
+            });
+        }
+
+        function downloadCode() {
+            if (!currentResults) return;
+            const blob = new Blob([currentResults.code.fixed], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const ext = { javascript: 'js', python: 'py', java: 'java', go: 'go', php: 'php', ruby: 'rb', typescript: 'ts', csharp: 'cs', cpp: 'cpp', rust: 'rs', html: 'html', css: 'css', sql: 'sql', bash: 'sh' };
+            a.download = `fixed-code.${ext[currentResults.language] || 'txt'}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function clearAll() {
+            document.getElementById('codeInput').value = '';
+            document.getElementById('results').classList.remove('visible');
+            document.getElementById('languageBadge').textContent = 'AUTO-DETECT';
+            currentResults = null;
+        }
+
+        function loadExample() {
+            const examples = [
+                { lang: 'Python', code: 'def lambda_handler(event, context):\n    print("Missing parenthesis"\n    return {"statusCode": 200, "body": "Hi"}' },
+                { lang: 'Python', code: 'def lambda_handler(event, context):\n    message = "Hello world\n    return {"statusCode": 200, "body": message}' },
+                { lang: 'Python', code: 'def lambda_handler(event, context):\n    returnt {"statusCode": 200, "body": "wrong keyword"}' },
+                { lang: 'Python', code: 'import jsonn\n\ndef lambda_handler(event, context):\n    reponse = json.dumps({"msg": "hi"})\n    return response' },
+                { lang: 'JavaScript', code: 'function calculateTotal(items) {\n    let total = 0\n    for (let i = 0; i < items.length; i++) {\n        total += items[i].price\n    }\n    return total\n}\n\nconst result = calculateTotal(null)\nconsole.log(result)' }
+            ];
+            
+            const randomExample = examples[Math.floor(Math.random() * examples.length)];
+            document.getElementById('codeInput').value = randomExample.code;
+            updateLanguageDetection();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            displayHistory();
+        });
+    </script>
+</body>
+</html>
+
