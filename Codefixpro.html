@@ -473,7 +473,200 @@
             color: var(--text-tertiary);
         }
 
+        .category {
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .category-header {
+            padding: 1rem 1.5rem;
+            background: var(--bg-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            transition: background 0.2s;
+            user-select: none;
+        }
+
+        .category-header:hover { background: var(--bg-tertiary); }
+
+        .category-icon {
+            font-size: 1.125rem;
+            transition: transform 0.2s;
+        }
+
+        .category-icon.collapsed { transform: rotate(-90deg); }
+
+        .category-count {
+            margin-left: auto;
+            background: var(--accent-light);
+            color: var(--accent-primary);
+            padding: 0.25rem 0.625rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+        }
+
+        .category-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .category-content.expanded { max-height: 5000px; }
+
+        .log-entry { border-bottom: 1px solid var(--border-color); }
+        .log-entry:last-child { border-bottom: none; }
+
+        .log-header {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: background 0.2s;
+            user-select: none;
+        }
+
+        .log-header:hover { background: var(--bg-secondary); }
+
+        .log-icon {
+            transition: transform 0.2s;
+            color: var(--text-tertiary);
+        }
+
+        .log-title-container { flex: 1; }
+
+        .log-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .log-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .log-badges {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .log-source-badge {
+            padding: 0.25rem 0.625rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .log-source-badge.aws {
+            background: var(--aws-color);
+            color: white;
+        }
+
+        .log-source-badge.manual {
+            background: var(--manual-color);
+            color: white;
+        }
+
+        .log-time {
+            font-size: 0.875rem;
+            color: var(--text-tertiary);
+        }
+
+        .log-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background: var(--bg-tertiary);
+        }
+
+        .log-content.expanded { max-height: 3000px; }
+
+        .log-details { padding: 1.5rem; }
+
+        .error-summary {
+            background: var(--bg-primary);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .error-summary-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .error-list-compact {
+            list-style: none;
+            padding: 0;
+        }
+
+        .error-list-compact li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .error-list-compact li:last-child { border-bottom: none; }
+
+        .error-list-compact li::before {
+            content: "• ";
+            color: var(--error);
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .log-description {
+            background: var(--bg-primary);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .log-code-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .log-code-panel {
+            background: var(--bg-primary);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .log-code-header {
+            padding: 0.75rem 1rem;
+            background: var(--bg-secondary);
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .log-code-content {
+            padding: 1rem;
+            font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            overflow-x: auto;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
         @media (max-width: 968px) {
+            .code-comparison, .log-code-comparison { grid-template-columns: 1fr; }
             .code-comparison { grid-template-columns: 1fr; }
             .hero h1 { font-size: 2rem; }
             .container { padding: 1rem; }
@@ -1152,7 +1345,160 @@ Supports: JavaScript, Python, Java, Go, PHP, Ruby, TypeScript, C#, C++, Rust, HT
                 return;
             }
             
-            container.innerHTML = `<div class="empty-history">History: ${history.length} item(s). Full history UI available in the detailed version.</div>`;
+            // Group by language
+            const grouped = {};
+            history.forEach(entry => {
+                const lang = entry.language || 'unknown';
+                if (!grouped[lang]) grouped[lang] = [];
+                grouped[lang].push(entry);
+            });
+            
+            // Build HTML
+            let html = '';
+            for (const [language, entries] of Object.entries(grouped)) {
+                html += `
+                    <div class="category">
+                        <div class="category-header" onclick="toggleCategory('${language}')">
+                            <span class="category-icon" id="icon-${language}">▼</span>
+                            <span>${language.toUpperCase()} Fixes</span>
+                            <span class="category-count">${entries.length}</span>
+                        </div>
+                        <div class="category-content" id="category-${language}">
+                            ${entries.map((entry, index) => createLogEntry(entry, index)).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function createLogEntry(entry, index) {
+            const timeAgo = getTimeAgo(new Date(entry.timestamp));
+            const title = generateLogTitle(entry);
+            const subtitle = generateLogSubtitle(entry);
+            const errorSummary = generateErrorSummary(entry);
+            const sourceBadge = entry.source === 'aws' 
+                ? '<span class="log-source-badge aws">AWS Log</span>'
+                : '<span class="log-source-badge manual">Manual Log</span>';
+            
+            return `
+                <div class="log-entry">
+                    <div class="log-header" onclick="toggleLog('${entry.id}')">
+                        <span class="log-icon" id="icon-${entry.id}">▶</span>
+                        <div class="log-title-container">
+                            <div class="log-title">${title}</div>
+                            <div class="log-subtitle">${subtitle}</div>
+                        </div>
+                        <div class="log-badges">
+                            ${sourceBadge}
+                            <span class="log-time">${timeAgo}</span>
+                        </div>
+                    </div>
+                    <div class="log-content" id="log-${entry.id}">
+                        <div class="log-details">
+                            ${errorSummary}
+                            <div class="log-code-comparison">
+                                <div class="log-code-panel">
+                                    <div class="log-code-header">Original Code</div>
+                                    <div class="log-code-content">
+                                        <pre>${escapeHtml(entry.original)}</pre>
+                                    </div>
+                                </div>
+                                <div class="log-code-panel">
+                                    <div class="log-code-header">Fixed Code</div>
+                                    <div class="log-code-content">
+                                        <pre>${escapeHtml(entry.fixed)}</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateLogTitle(entry) {
+            if (!entry.errors || entry.errors.length === 0) {
+                return 'Code Review - No Critical Issues';
+            }
+            const errorTypes = [...new Set(entry.errors.map(e => e.type.replace(/_/g, ' ')))];
+            const primaryError = errorTypes[0];
+            if (errorTypes.length === 1) return primaryError;
+            if (errorTypes.length === 2) return `${primaryError} & ${errorTypes[1]}`;
+            return `${primaryError} + ${errorTypes.length - 1} More Issues`;
+        }
+
+        function generateLogSubtitle(entry) {
+            const parts = [];
+            if (entry.summary.errors > 0) parts.push(`${entry.summary.errors} error${entry.summary.errors !== 1 ? 's' : ''}`);
+            if (entry.summary.warnings > 0) parts.push(`${entry.summary.warnings} warning${entry.summary.warnings !== 1 ? 's' : ''}`);
+            if (entry.summary.fixes > 0) parts.push(`${entry.summary.fixes} fix${entry.summary.fixes !== 1 ? 'es' : ''} applied`);
+            return parts.join(' • ') || 'No issues found';
+        }
+
+        function generateErrorSummary(entry) {
+            if (!entry.errors || entry.errors.length === 0) {
+                return `
+                    <div class="log-description">
+                        ✅ No errors detected. Code looks good!<br>
+                        📊 Confidence: ${entry.summary.confidence}%
+                    </div>
+                `;
+            }
+            const errorList = entry.errors.map(e => 
+                `<li><strong>${e.type.replace(/_/g, ' ')}:</strong> ${e.message}</li>`
+            ).join('');
+            return `
+                <div class="error-summary">
+                    <div class="error-summary-title">Issues Found:</div>
+                    <ul class="error-list-compact">${errorList}</ul>
+                </div>
+                <div class="log-description">
+                    ✅ Applied ${entry.summary.fixes} fix${entry.summary.fixes !== 1 ? 'es' : ''}<br>
+                    📊 Confidence: ${entry.summary.confidence}%
+                </div>
+            `;
+        }
+
+        function toggleCategory(language) {
+            const content = document.getElementById(`category-${language}`);
+            const icon = document.getElementById(`icon-${language}`);
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                icon.classList.add('collapsed');
+            } else {
+                content.classList.add('expanded');
+                icon.classList.remove('collapsed');
+            }
+        }
+
+        function toggleLog(id) {
+            const content = document.getElementById(`log-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                icon.classList.remove('expanded');
+                icon.textContent = '▶';
+            } else {
+                content.classList.add('expanded');
+                icon.classList.add('expanded');
+                icon.textContent = '▼';
+            }
+        }
+
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return Math.floor(seconds / 60) + ' min ago';
+            if (seconds < 86400) return Math.floor(seconds / 3600) + ' hr ago';
+            return Math.floor(seconds / 86400) + ' days ago';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
         function clearHistory() {
@@ -1215,4 +1561,11 @@ Supports: JavaScript, Python, Java, Go, PHP, Ruby, TypeScript, C#, C++, Rust, HT
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
 
